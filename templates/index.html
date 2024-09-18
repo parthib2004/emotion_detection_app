@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Assistant</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .chatbox { margin: 50px; max-width: 600px; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+        .chatbox input { width: 100%; padding: 10px; margin-top: 10px; }
+        .response { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="chatbox">
+        <h2>Mental Health Assistant</h2>
+        <div class="response" id="response"></div>
+        <input type="text" id="userInput" placeholder="How are you feeling?" onkeydown="if(event.key === 'Enter') sendMessage()">
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const message = document.getElementById('userInput').value;
+            const responseDiv = document.getElementById('response');
+
+            if (message.trim()) {
+                const response = await fetch('/detect_emotion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                responseDiv.innerHTML = `<p>Emotion: ${data.emotion}</p><p>Suggestion: ${data.suggestion}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
